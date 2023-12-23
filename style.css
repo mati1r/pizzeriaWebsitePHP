@@ -1,0 +1,328 @@
+﻿body 
+{
+    font-family:Arial, Helvetica, sans-serif;
+    background-image: url(PB3.jpg);
+}
+
+div.main
+{
+    text-align: center;
+    max-width: 1100px;
+    margin: 0 auto 0 auto;
+    background-color: rgba(80,80,80,0.3);
+}
+
+div.opis
+{
+    margin-top: 50px;
+    margin-bottom: 150px;
+    color: white;
+}
+
+div.text
+{
+    position: relative;
+    top: 30px;
+}
+
+p.kontakt_pog
+{
+    font-weight: bold;
+}
+
+div.kontakt
+{
+    justify-content: center;
+    display: flex;
+}
+
+div.kontakt_child
+{
+    text-align: left;
+    color: white;
+    text-shadow: 2px 2px 3px black;
+}
+
+div.logowanie
+{
+    text-align: center;
+    color: white;
+    text-shadow: 5px 5px 10px black;
+    height: 300px;
+}
+
+div.zamowienie
+{
+    color: white;
+    text-shadow: 5px 5px 10px black;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 50px;
+    padding-top: 50px;
+    margin-bottom: 200px;
+    height: 100%;
+}
+
+.item {
+    width: 100%;
+}
+
+.item-edit {
+    width: 100%;
+}
+
+div.edit
+{
+    color: white;
+    text-shadow: 5px 5px 10px black;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    justify-content: center;
+    gap: 50px;
+    padding-top: 50px;
+    margin-bottom: 200px;
+    height: 100%;
+}
+
+@media (max-width: 600px) {
+    div.zamowienie, div.edit {
+        grid-template-columns: 1fr;
+    }
+}
+
+
+div.Cena
+{
+    margin-top: 10px;
+    margin-bottom: 5px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+img.rest
+{
+    float: left;
+}
+
+input[type="number"]::-webkit-inner-spin-button,
+input[type="number"]::-webkit-outer-spin-button {
+    -webkit-appearance: none;
+    margin: 0;
+}
+
+input[type="number"] {
+    -moz-appearance: textfield;
+}
+
+input.zamowienie, select
+{
+    box-sizing: border-box;
+    border: 0;
+    border-radius: 5px;
+    background-color: #777;
+    color: white;
+    padding: 8px 16px;
+    margin: 10px 20px;
+    width: 90%;
+}
+
+::placeholder {
+    color: white;
+    opacity: 1; /* Firefox */
+  }
+
+input.zamowienie:hover
+{
+    background-color: rgb(83, 83, 83);
+}
+
+input.edit, select.edit
+{
+    box-sizing: border-box;
+    border: 0;
+    border-radius: 5px;
+    background-color: #777;
+    color: white;
+    padding: 8px 16px;
+    margin: 10px 20px;
+    width: 50%;
+}
+
+input.button
+{
+    background-color: #6b0404;
+    color: white;
+    font-weight: bold;
+    border: black;
+    border-width: medium thin;
+    padding: 12px 24px;
+    margin: 5px;
+    border-radius: 10px;
+}
+
+input.button:hover
+{
+    background-color: #aa0808;
+    color: black;
+}
+
+input.radio
+{
+  appearance: none;
+  width: 16px;
+  height: 16px;
+  border: 2px solid black;
+  transition: 0.2s all linear;
+  margin-right: 10px;
+  margin-left: 0px;
+}
+
+input.radio:checked
+{
+    border: 8px solid #6b0404;
+}
+
+input.radio:hover
+{
+    border: 6px solid #aa0808;
+}
+
+select:hover
+{
+    background-color: rgb(83, 83, 83);
+}
+
+p.opis_rest
+{
+    line-height: 20px;
+}
+
+td.menu_nazwa
+{  
+    border:5px solid #6b0404;
+    padding: 5px;
+    text-align: center;
+}
+
+td.menu_cena
+{
+    border:5px solid #6b0404;
+    padding-left:10px; 
+    padding-right:10px; 
+    padding-top: 5px;
+    padding-bottom:5px;
+    text-align: center; 
+    width: 50px;
+}
+
+td.admin
+{
+    border:3px solid #6b0404;
+    padding-left:5px; 
+    padding-right:5px; 
+    padding-top: 5px;
+    padding-bottom:5px;
+    text-align: center;    
+}
+
+table.menu
+{
+    border-collapse: collapse;
+    margin: auto;
+    background-color: transparent;
+    color: white;
+    text-shadow: 5px 5px 10px black;
+}
+
+nav 
+{
+    background-color: #6b0404;
+    position: sticky;
+    top: 0px;
+}
+
+a.menu 
+{
+    display: inline-block;
+    width: 15%;
+    padding: 15px 30px 15px 30px;
+    color: white;
+    text-decoration: solid;
+}
+
+a.menu:hover 
+{
+    background-color: #aa0808;
+    color: black;
+}
+
+a.mail_link
+{
+    color: #aa0a0a;
+    text-shadow: 2px 2px 3px black;
+    text-decoration: solid;
+}
+
+a.mail_link:hover
+{
+    color: #cf0a0a;
+}
+
+a.active 
+{
+    background-color: gray;
+}
+
+button
+{
+    background-color: #6b0404;
+    color: white;
+    font-weight: bold;
+    border: black;
+    border-width: medium thin;
+    padding: 12px 24px;
+    margin: 5px;
+    border-radius: 10px;
+}
+
+button:hover
+{
+    background-color: #aa0808;
+    color: black;
+}
+
+header
+{
+    background-image: url(T1.jpg);
+    background-repeat: no-repeat;
+    background-size: 1100px;
+    padding:100px;
+    background-position-y: 70%;
+    color:#6b0404;
+    text-shadow: 2px 2px 3px black;
+
+}
+
+footer
+{
+    padding: 15px;
+    background-color: rgb(73, 73, 73);
+    color: white;
+    text-align: center;
+}
+
+span.error
+{
+    color: #aa0808;
+}
+
+h3.error
+{
+    color: #aa0808;
+    text-shadow: 5px 5px 10px black;
+    text-align: center;
+}
+
+div.error{
+    margin-bottom: 100px;
+}
