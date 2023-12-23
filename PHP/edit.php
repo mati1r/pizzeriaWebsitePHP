@@ -32,7 +32,7 @@ $pizzaId = $row['id_pizzy'];
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="../css/style.css" />
     <title>Pizzeria</title>
 </head>
 
@@ -53,9 +53,9 @@ $pizzaId = $row['id_pizzy'];
                 <div class="edit">   
                     <div class="item-edit">
                         <h2>Dane klienta</h2>
-                        <input class="edit" type="text" name="Name" value="<?= $row['Imie']?>"/></br>
-                        <input class="edit" type="text" name="Surname"  value="<?= $row['Nazwisko']?>"/></br>
-                        <input class="edit" type="tel" name="PhoneNumber"  pattern="[0-9]{3}-[0-9]{3}-[0-9]{3}" value="<?= $row['Telefon']?>"/>
+                        <input class="edit" type="text" name="Name" placeholder="Imie" value="<?= $row['Imie']?>"/></br>
+                        <input class="edit" type="text" name="Surname" placeholder="Nazwisko"  value="<?= $row['Nazwisko']?>"/></br>
+                        <input class="edit" type="tel" name="PhoneNumber" placeholder="Telefon: 123-456-789"  pattern="[0-9]{3}-[0-9]{3}-[0-9]{3}" value="<?= $row['Telefon']?>"/>
                         </br>
                     </div>
                     
@@ -78,7 +78,7 @@ $pizzaId = $row['id_pizzy'];
                         ?>
                         </select>
 
-                        <input class="edit" type="number" name="Quantity" value="<?= $row['ilosc']?>" min = "1" max = "99"/></br>
+                        <input class="edit" type="number" name="Quantity" placeholder="Ilość" value="<?= $row['ilosc']?>" min = "1" max = "99"/></br>
                         <select class="edit" name="Size">
                                     <option <?php if($selected == '30'){echo("selected");}?> value=30>30</option>
                                     <option <?php if($selected == '40'){echo("selected");}?> value=40>40</option>

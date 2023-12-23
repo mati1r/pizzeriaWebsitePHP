@@ -4,7 +4,7 @@
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="../css/style.css" />
     <title>Pizzeria</title>
 </head>
 
@@ -21,17 +21,17 @@
         </nav>
         <br/>
             <form>
-            <div class = "logowanie">
-                <div class="Dane_logowania">
-                <h2>Dane logowania</h2>
-                <input class="zamowienie" type="text" name="login" id="logowanie" placeholder="Login" autocomplete="off" required="" /></br>
-                <input class="zamowienie" type="text" name="haslo" id="logowanie" placeholder="Hasło" autocomplete="off" required="" /></br>
-                <input class="button" type="button" onclick ="Login(login.value,haslo.value)" value="Zaloguj"/>
-                <input class="button" type="reset">
+                <div class = "logowanie">
+                    <div class="item-login">
+                    <h2>Dane logowania</h2>
+                    <input class="login" type="text" name="login" id="logowanie" placeholder="Login" autocomplete="off" required="" /></br>
+                    <input class="login" type="text" name="haslo" id="logowanie" placeholder="Hasło" autocomplete="off" required="" /></br>
+                    <input class="button-big" type="button" onclick ="Login(login.value,haslo.value)" value="Zaloguj"/>
+                    <input class="button-big" type="reset">
+                    </div>
                 </div>
             </form>
-                <div id="error" class="error"></div>
-            </div>
+            <div id="error" class="error"></div>
         <footer>
             <h6>
             Strona restauracji jest wykonana na potrzeby projektu i nie ma na celu czerpania korzyści majątkowych. <br />

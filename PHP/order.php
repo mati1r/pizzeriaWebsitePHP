@@ -5,15 +5,19 @@
 if($conn->connect_errno){
     die($conn->connect_error);
 }
-$query="SELECT id, nazwa FROM menu";
-$result=$conn->query($query);
+
+$queryMenu="SELECT id, nazwa FROM menu";
+$resultMenu=$conn->query($queryMenu);
+
+$queryCity="SELECT nazwa FROM miasta";
+$resultCity=$conn->query($queryCity);
 ?>
 
 <html lang="en">
 <head>
     <meta charset="utf-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1">
-    <link rel="stylesheet" href="style.css" />
+    <link rel="stylesheet" href="../css/style.css" />
     <title>Pizzeria</title>
 </head>
 
@@ -44,11 +48,12 @@ $result=$conn->query($query);
                         <h2>Dane zamieszkania</h2>
 
                         <select id="miasto" name="city">
-                            <option value="Krapkowice">Krapkowice</option>
-                            <option value="Gogolin">Gogolin</option>
-                            <option value="Odrowaz">Odrowąż</option>
-                            <option value="Malnia">Malnia</option>
-                            <option value="Gwozdzice">Gwoździce</option>
+                        <?php
+                            while($rowCity=$resultCity->fetch_assoc())
+                            {
+                                echo "<option value=${rowCity['nazwa']}> ${rowCity['nazwa']} </option>"; 
+                            }
+                        ?>
                         </select></br>
 
                         <input class="zamowienie" type="text" name="street" placeholder="Ulica" /></br>
@@ -61,9 +66,9 @@ $result=$conn->query($query);
                         <h2>Dane zamowienia</h2>
                         <select class="zamowienie" name="pizzaId" onchange="CountPrice(this.value, quantity.value, size.value)">
                         <?php
-                            while($row=$result->fetch_assoc())
+                            while($rowMenu=$resultMenu->fetch_assoc())
                             {
-                                echo "<option value=${row['id']}> ${row['nazwa']} </option>"; 
+                                echo "<option value=${rowMenu['id']}> ${rowMenu['nazwa']} </option>"; 
                             }
                         ?>
                         </select>
