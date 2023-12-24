@@ -1,31 +1,29 @@
 <?php
 
-@$conn= new mysqli('localhost','root','','Restauracja');
-if($conn->connect_errno){
+@$conn = new mysqli('localhost', 'root', '', 'Restauracja');
+if ($conn->connect_errno) {
     die($conn->connect_error);
 }
-$login=$_GET['login'] ?? null;
-$password=$_GET['$password'] ?? null;
 
-$logowanie="SELECT login, haslo FROM logowanie;";
-$wynik = $conn->query($logowanie);
+$login = $_GET['login'] ?? null;
+$password = $_GET['password'] ?? null;
+echo "Login: $login, Password: $password<br>";
+$query = "SELECT login, haslo FROM logowanie WHERE login = ? AND haslo = ?";
+$stmt = $conn->prepare($query);
+$stmt->bind_param('ss', $login, $password);
 
-$spr = 0;
+$stmt->execute();
+$stmt->store_result();
 
-while($wiersz=$wynik->fetch_assoc())
-{
-    if($login == $wiersz['login'] && $password == $wiersz['haslo']){
-        $spr = 1;
-    }
-}
-
-if($spr == 1){
+if ($stmt->num_rows > 0) {
     session_start();
     $_SESSION['login'] = true;
     session_commit();
-}else
-{
+} else {
     http_response_code(401);
-    echo "Bledne dane logowania";
+    echo "Login: $login, Password: $password<br>";
 }
+
+$stmt->close();
+mysqli_close($conn);
 ?>

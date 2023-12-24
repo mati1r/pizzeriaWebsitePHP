@@ -43,13 +43,13 @@ function Login(login, password)
 {
         if(login =="" || password == "")
         {
-                document.getElementById("Blad").innerHTML = "Nie uzupełniono danych";
+                document.getElementById("error").innerHTML = "Nie uzupełniono danych";
                 return;
         }
         else
         {  
         let xmlhttp = new XMLHttpRequest(); 
-        xmlhttp.open("GET","loginBack.php?login="+login+"&$password="+password,true);
+        xmlhttp.open("GET","loginBack.php?login="+login+"&password="+password,true);
         xmlhttp.send();
         xmlhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) { 
@@ -74,23 +74,20 @@ function Logout()
 function Edit(name, surname, phoneNumber, pizzaId, quantity, size, recordId)
 {
         const reg = /[0-9]{3}-[0-9]{3}-[0-9]{3}/;
-        console.log(name, surname, phoneNumber, pizzaId, quantity, size, recordId)
+
         if(name == "" || surname == "" || phoneNumber == "" || pizzaId == null || quantity == null || size == null)
         {
-                document.getElementById("Error").innerHTML = `<h3 class="error" >Przed wysłaniem proszę poprawić błędy:</h3> 
+                document.getElementById("error").innerHTML = `<h3 class="error" >Przed wysłaniem proszę poprawić błędy:</h3> 
                                                                 <span class="error"> Nie uzupełniono danych </span>`;
-                document.getElementById("Error").classList.add("error")
         }
         else if(!reg.test(phoneNumber))
         {
-                document.getElementById("Error").innerHTML = `<h3 class="error" >Przed wysłaniem proszę poprawić błędy:</h3> 
+                document.getElementById("error").innerHTML = `<h3 class="error" >Przed wysłaniem proszę poprawić błędy:</h3> 
                                                                 <span class="error"> Zły format numeru telefonu </span>`;
-                document.getElementById("Error").classList.add("error")
 
         }else if(phoneNumber.length > 11){
-                document.getElementById("Error").innerHTML = `<h3 class="error" >Przed wysłaniem proszę poprawić błędy:</h3> 
+                document.getElementById("error").innerHTML = `<h3 class="error" >Przed wysłaniem proszę poprawić błędy:</h3> 
                                                                 <span class="error"> Zły format numeru telefonu </span>`;
-                document.getElementById("Error").classList.add("error")
         }
         else
         {  
@@ -103,7 +100,11 @@ function Edit(name, surname, phoneNumber, pizzaId, quantity, size, recordId)
         xmlhttp.send();
         xmlhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) { 
-                callReload("admin.php","content","Trwa ładowanie strony...");
+                        callReload("admin.php","content","Trwa ładowanie strony...");
+                }
+
+                if (this.readyState == 4 && this.status == 400) { 
+                        document.getElementById("error").innerHTML = "Nieuzupełnione dane lub niepoprawny format danych";
                 }
         };
         }
@@ -118,7 +119,10 @@ function Order(name, surname, phoneNumber, city, street, buildingNumber , apartm
         xmlhttp.send();
         xmlhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) { 
-                callReload("index.php","content","Trwa ładowanie strony...");
+                        callReload("index.php","content","Trwa ładowanie strony...");
+                }
+                if (this.readyState == 4 && this.status == 400) { 
+                        document.getElementById('error').innerHTML = this.responseText;
                 }
         };       
 }
@@ -145,8 +149,8 @@ function CountPrice(str,str2,str3)
 
 
 function Validate(form)
-{
-        const formMessage = document.getElementById('message');
+{       
+        const errorMessage = document.getElementById('error');
         const reg = /[0-9]{3}-[0-9]{3}-[0-9]{3}/;
         let formErrors = [];
         if(form.name.value == ''){
@@ -211,10 +215,10 @@ function Validate(form)
                 Order(form.name.value, form.surname.value, form.phoneNumber.value, form.city.value, 
                         form.street.value, form.buildingNumber.value, form.apartmentNumber.value,
                         form.pizzaId.value, form.quantity.value, form.size.value);
-                //tutaj kod dla przejścia
+                
         }else{
-                formMessage.innerHTML = 
-                `<h3>Przed wysłaniem proszę poprawić błędy:</h3>
+                errorMessage.innerHTML = 
+                `<h3>Przed zamowieniem proszę poprawić błędy:</h3>
                 <ul>
                 ${formErrors.map(el => `<li>${el}</li>`).join("")}
                 </ul>`;

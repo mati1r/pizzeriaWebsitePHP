@@ -61,7 +61,7 @@ div.zamowienie
     grid-template-columns: repeat(3, 1fr);
     gap: 50px;
     padding-top: 50px;
-    margin-bottom: 200px;
+    padding-bottom: 100px;
     height: 100%;
 }
 
@@ -92,7 +92,7 @@ div.edit
     justify-content: center;
     gap: 50px;
     padding-top: 50px;
-    margin-bottom: 200px;
+    padding-bottom: 100px;
     height: 100%;
 }
 
@@ -168,7 +168,7 @@ input.login
     background-color: #777;
     color: white;
     padding: 8px 16px;
-    margin: 10px 20px;
+    margin: 10px 0;
     width: 100%;
 }
 
@@ -190,9 +190,10 @@ input.button-big
     color: white;
     font-weight: bold;
     border: black;
-    padding: 18px 52px;
+    padding: 18px 0;
     margin: 5px;
     border-radius: 10px;
+    width: 50%;
     cursor: pointer;
 }
 
@@ -359,6 +360,17 @@ h3.error
     text-align: center;
 }
 
-div.error{
-    margin-bottom: 100px;
+div.error
+{
+    font-weight: 600;
+    color: #aa0808;
+    text-shadow: 1px 2px 3px black;
+    margin-bottom: 10px;
+}
+
+ul
+{
+    list-style-type: none;
+    display: inline-block;
+    text-align: left;
 }

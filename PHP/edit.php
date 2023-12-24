@@ -85,11 +85,12 @@ $pizzaId = $row['id_pizzy'];
                         </select></br>
                         <input class="button" type="button" 
                         onclick="Edit(Name.value, Surname.value, PhoneNumber.value, PizzaId.value, Quantity.value, Size.value,'<?=$id?>')" value="Zatwierdz"/>
+
                         <input class="button" type="button" onClick="callReload('admin.php', 'content', 'Trwa ładowanie strony...')" value="Powrot" />
                     </div>
                 </div>
+                <div id="error" class="error"></div>
             </form>  
-        <div id="Error"></div>
             <footer>
                 <h6>
                 Strona restauracji jest wykonana na potrzeby projektu i nie ma na celu czerpania korzyści majątkowych. <br />

@@ -86,8 +86,8 @@ $resultCity=$conn->query($queryCity);
                         <input class="button" type="button"id="zatwierdz" onclick ="Validate(form_zam)" value="Zamow"/>
                         <input class="button" type="reset">
                     </div>
-                    <div class="form-message" id = "message"></div>
                 </div>
+                <div class="error" id="error"></div>
             </form>
              <br/>
         <footer>
