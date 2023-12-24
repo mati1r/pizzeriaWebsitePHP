@@ -7,3 +7,8 @@ request data and to manage and edit entered data by an authorized administrator 
 
 Website is configured as SPA by a use of AJAX calls made throught XMLHttpRequests.
 ```
+
+## Database
+```
+Data base used: MySQL
+```
