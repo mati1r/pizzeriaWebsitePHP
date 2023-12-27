@@ -71,31 +71,93 @@ function Logout()
         callReload("index.php", "content", "Trwa ładowanie strony...");
 }
 
-function Edit(name, surname, phoneNumber, pizzaId, quantity, size, recordId)
+async function GetSelectedValues(names) {
+        let selects = document.getElementsByName(names[0]);
+    
+        let values = [];
+        for (let i = 0; i < selects.length; i++) {
+            let pizzaId = selects[i].value;
+            let quantity = document.getElementsByName(names[1])[i].value;
+            let size = document.getElementsByName(names[2])[i].value;
+            let oldPizzaId = document.getElementsByName(names[3])[i].getAttribute('data-oldPizzaId');
+    
+            values.push({
+                pizzaId: pizzaId,
+                oldPizzaId: oldPizzaId,
+                quantity: quantity,
+                size: size,
+                price: await CountPrice(pizzaId, quantity, size)
+            });
+        }
+        return values;
+    }
+
+async function Edit(name, surname, phoneNumber, orderId)
 {
         const reg = /[0-9]{3}-[0-9]{3}-[0-9]{3}/;
 
-        if(name == "" || surname == "" || phoneNumber == "" || pizzaId == null || quantity == null || size == null)
+        let orderData = await GetSelectedValues(['pizzaId', 'quantity', 'size', 'oldPizzaId']);
+
+        if(name == "" || surname == "" || phoneNumber == "" || orderData.length < 0)
         {
                 document.getElementById("error").innerHTML = `<h3 class="error" >Przed wysłaniem proszę poprawić błędy:</h3> 
                                                                 <span class="error"> Nie uzupełniono danych </span>`;
+                return;
         }
-        else if(!reg.test(phoneNumber))
+
+        if(!reg.test(phoneNumber))
         {
                 document.getElementById("error").innerHTML = `<h3 class="error" >Przed wysłaniem proszę poprawić błędy:</h3> 
                                                                 <span class="error"> Zły format numeru telefonu </span>`;
-
-        }else if(phoneNumber.length > 11){
+                return;
+        }
+        if(phoneNumber.length > 11){
                 document.getElementById("error").innerHTML = `<h3 class="error" >Przed wysłaniem proszę poprawić błędy:</h3> 
                                                                 <span class="error"> Zły format numeru telefonu </span>`;
+                return;
         }
-        else
-        {  
+
+        for (let i = 0; i < orderData.length; i++) {
+                if(orderData[i].pizzaId == null)
+                {
+                        document.getElementById("error").innerHTML = `<h3 class="error" >Przed wysłaniem proszę poprawić błędy:</h3> 
+                        <span class="error"> Nie uzupełniono danych </span>`;
+                        return;
+                }
+
+                if(orderData[i].quantity == null)
+                {
+                        document.getElementById("error").innerHTML = `<h3 class="error" >Przed wysłaniem proszę poprawić błędy:</h3> 
+                        <span class="error"> Nie uzupełniono danych </span>`;
+                        return;
+                }
+
+                if(orderData[i].size == null)
+                {
+                        document.getElementById("error").innerHTML = `<h3 class="error" >Przed wysłaniem proszę poprawić błędy:</h3> 
+                        <span class="error"> Nie uzupełniono danych </span>`;
+                        return;
+                }
+
+                if(orderData[i].oldPizzaId == null)
+                {
+                        document.getElementById("error").innerHTML = `<h3 class="error" >Wystąpił błąd</h3>`;
+                        return;
+                }
+        }
 
         let xmlhttp = new XMLHttpRequest(); 
+        let url = "editBack.php?name="+name+"&surname="+surname+"&phoneNumber="+phoneNumber+"&orderId="+orderId
 
-        xmlhttp.open("GET","editBack.php?name="+name+"&surname="+surname+"&phoneNumber="+phoneNumber+"&pizzaId="+pizzaId
-        +"&quantity="+quantity+"&size="+size+"&recordId="+recordId,true);
+        for (let i = 0; i < orderData.length; i++) {
+                url += `&orderData[${i}][pizzaId]=${encodeURIComponent(orderData[i].pizzaId)}`;
+                url += `&orderData[${i}][oldPizzaId]=${encodeURIComponent(orderData[i].oldPizzaId)}`;
+                url += `&orderData[${i}][quantity]=${encodeURIComponent(orderData[i].quantity)}`;
+                url += `&orderData[${i}][size]=${encodeURIComponent(orderData[i].size)}`;
+                url += `&orderData[${i}][price]=${encodeURIComponent(orderData[i].price)}`;
+            }
+
+        xmlhttp.open("GET",url,true);
 
         xmlhttp.send();
         xmlhttp.onreadystatechange = function() {
@@ -104,11 +166,9 @@ function Edit(name, surname, phoneNumber, pizzaId, quantity, size, recordId)
                 }
 
                 if (this.readyState == 4 && this.status == 400) { 
-                        document.getElementById("error").innerHTML = "Nieuzupełnione dane lub niepoprawny format danych";
+                        document.getElementById("error").innerHTML = this.responseText;
                 }
-        };
         }
-        
 }
 function Order(name, surname, phoneNumber, city, street, buildingNumber , apartmentNumber)
 {

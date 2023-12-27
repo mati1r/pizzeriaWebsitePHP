@@ -53,55 +53,66 @@ $resultOrderData=$conn->query($orderData);
             <a class="menu active" href="#admin" onClick="callReload('admin.php', 'content', 'Trwa ładowanie strony...')">ADMIN</a>
         </nav>
         <br/> 
-            <form>
-                <div class="edit">   
-                    <div class="item-edit">
-                        <h2>Dane klienta</h2>
-                        <input class="edit" type="text" name="Name" placeholder="Imie" 
-                                value="<?= $rowPersonData['name']?>"/></br>
-                        <input class="edit" type="text" name="Surname" placeholder="Nazwisko"  
-                                value="<?= $rowPersonData['surname']?>"/></br>
-                        <input class="edit" type="tel" name="PhoneNumber" placeholder="Telefon: 123-456-789"  
-                                pattern="[0-9]{3}-[0-9]{3}-[0-9]{3}" value="<?= $rowPersonData['phone_number']?>"/>
-                        </br>
-                    </div>
-                    
-                    <div class="item-edit">
-                        <h2>Dane zamowienia</h2>
-                        <?php
-                            while($rowOrderData=$resultOrderData->fetch_assoc())
-                            {
-                            $select = $rowOrderData['size'];
-                            echo "<select class='edit' name='PizzaId'>";
-                                    $resultMenu->data_seek(0);
-                                    while($rowMenu=$resultMenu->fetch_assoc()){
-                                        if($rowMenu['id'] == $rowOrderData['menu_id'])
-                                        {
-                                            echo "<option value=${rowMenu['id']} selected> ${rowMenu['name']} </option>"; 
-                                        }
-                                        else
-                                        {
-                                            echo "<option value=${rowMenu['id']}> ${rowMenu['name']} </option>"; 
-                                        }
-                                    }
+        <div class="edit-container">
+        <input class="button" type="button" 
+                onClick="callReload('admin.php', 'content', 'Trwa ładowanie strony...')" 
+                value="Powrot" />
+                
+        <div id="error" class="error"></div>
 
-                                echo "</select>
-
-                                <input class='edit' type='number' name='Quantity' placeholder='Ilość' value='${rowOrderData['quantity']}' min = '1' max = '99'/></br>
-                                <select class='edit' name='Size'>
-                                            <option value=30>30</option>
-                                            <option value=40>40</option>
-                                </select></br>";
-                            }
-                        ?>
-                        <input class="button" type="button" 
-                        onclick="Edit(Name.value, Surname.value, PhoneNumber.value, PizzaId.value, Quantity.value, Size.value,'<?=$id?>')" value="Zatwierdz"/>
-
-                        <input class="button" type="button" onClick="callReload('admin.php', 'content', 'Trwa ładowanie strony...')" value="Powrot" />
-                    </div>
+        <input class="button" type="button" 
+                onclick="Edit(document.getElementsByName('name')[0].value, 
+                            document.getElementsByName('surname')[0].value, 
+                            document.getElementsByName('phoneNumber')[0].value,
+                            '<?=$id?>')" 
+                value="Zatwierdz"/>
+        </div>
+            <div class="edit">   
+                <div class="item-edit">
+                    <h2>Dane klienta</h2>
+                    <input class="edit" type="text" name="name" placeholder="Imie" 
+                            value="<?= $rowPersonData['name']?>"/></br>
+                    <input class="edit" type="text" name="surname" placeholder="Nazwisko"  
+                            value="<?= $rowPersonData['surname']?>"/></br>
+                    <input class="edit" type="tel" name="phoneNumber" placeholder="Telefon: 123-456-789"  
+                            pattern="[0-9]{3}-[0-9]{3}-[0-9]{3}" value="<?= $rowPersonData['phone_number']?>"/>
+                    </br>
                 </div>
-                <div id="error" class="error"></div>
-            </form>  
+                    <?php
+                        while($rowOrderData=$resultOrderData->fetch_assoc())
+                        {
+                        echo "<div class='item-edit'>
+                        <h2>Dane zamowienia</h2>
+                        <p name='oldPizzaId' data-oldPizzaId=${rowOrderData['menu_id']}></p>";
+                        $select = $rowOrderData['size'];
+                        echo "<select class='edit' name='pizzaId'>";
+                                $resultMenu->data_seek(0);
+                                while($rowMenu=$resultMenu->fetch_assoc()){
+                                    if($rowMenu['id'] == $rowOrderData['menu_id'])
+                                    {
+                                        echo "<option value=${rowMenu['id']} selected> ${rowMenu['name']} </option>"; 
+                                    }
+                                    else
+                                    {
+                                        echo "<option value=${rowMenu['id']}> ${rowMenu['name']} </option>"; 
+                                    }
+                                }
+                            echo "</select>
+
+                            <input class='edit' type='number' name='quantity' placeholder='Ilość' value='${rowOrderData['quantity']}' min = '1' max = '99'/></br>
+                            <select class='edit' name='size'>";
+                                if($select == 30){
+                                        echo  "<option value=30 selected>30</option>
+                                        <option value=40>40</option>";
+                                }else{
+                                    echo "<option value=30>30</option>
+                                    <option value=40 selected>40</option>";
+                                }
+                            echo "</select></br>
+                        </div>";
+                        }
+                    ?>
+            </div>
             <footer>
                 <h6>
                 Strona restauracji jest wykonana na potrzeby projektu i nie ma na celu czerpania korzyści majątkowych. <br />
