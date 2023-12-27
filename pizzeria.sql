@@ -3,7 +3,7 @@
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Dec 23, 2023 at 02:12 PM
+-- Generation Time: Dec 27, 2023 at 02:53 PM
 -- Wersja serwera: 10.4.28-MariaDB
 -- Wersja PHP: 8.2.4
 
@@ -18,44 +18,73 @@ SET time_zone = "+00:00";
 /*!40101 SET NAMES utf8mb4 */;
 
 --
--- Database: `restauracja`
+-- Database: `pizzeria`
 --
 
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla tabeli `klient`
+-- Struktura tabeli dla tabeli `admin_account`
 --
 
-CREATE TABLE `klient` (
-  `id` int(11) NOT NULL,
-  `Imie` varchar(20) NOT NULL,
-  `Nazwisko` varchar(30) NOT NULL,
-  `Telefon` varchar(11) NOT NULL,
-  `Miasto` varchar(30) NOT NULL,
-  `Ulica` varchar(30) NOT NULL,
-  `Nr_bud` int(11) NOT NULL,
-  `Nr_miesz` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_polish_ci;
-
--- --------------------------------------------------------
-
---
--- Struktura tabeli dla tabeli `logowanie`
---
-
-CREATE TABLE `logowanie` (
+CREATE TABLE `admin_account` (
   `id` int(11) NOT NULL,
   `login` varchar(30) NOT NULL,
-  `haslo` varchar(50) NOT NULL
+  `password` varchar(50) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `logowanie`
+-- Dumping data for table `admin_account`
 --
 
-INSERT INTO `logowanie` (`id`, `login`, `haslo`) VALUES
+INSERT INTO `admin_account` (`id`, `login`, `password`) VALUES
 (1, 'admin', 'admin');
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `cities`
+--
+
+CREATE TABLE `cities` (
+  `id` int(11) NOT NULL,
+  `name` varchar(100) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `cities`
+--
+
+INSERT INTO `cities` (`id`, `name`) VALUES
+(1, 'Krapkowice'),
+(2, 'Gogolin'),
+(3, 'Odrowąż'),
+(4, 'Malnia'),
+(5, 'Gwoździce');
+
+-- --------------------------------------------------------
+
+--
+-- Struktura tabeli dla tabeli `client`
+--
+
+CREATE TABLE `client` (
+  `id` int(11) NOT NULL,
+  `name` varchar(50) NOT NULL,
+  `surname` varchar(70) NOT NULL,
+  `phone_number` varchar(11) NOT NULL,
+  `city` varchar(50) NOT NULL,
+  `street` varchar(50) NOT NULL,
+  `building_number` int(11) NOT NULL,
+  `apartment_number` int(11) DEFAULT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `client`
+--
+
+INSERT INTO `client` (`id`, `name`, `surname`, `phone_number`, `city`, `street`, `building_number`, `apartment_number`) VALUES
+(1, 'Adam', 'Nowak', '222-222-222', 'Gogolin', 'Szybka', 5, 2);
 
 -- --------------------------------------------------------
 
@@ -65,17 +94,17 @@ INSERT INTO `logowanie` (`id`, `login`, `haslo`) VALUES
 
 CREATE TABLE `menu` (
   `id` int(11) NOT NULL,
-  `nazwa` varchar(30) NOT NULL,
-  `skladniki` varchar(150) NOT NULL,
-  `cena_30` int(11) NOT NULL,
-  `cena_40` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_polish_ci;
+  `name` varchar(50) NOT NULL,
+  `ingredients` varchar(300) NOT NULL,
+  `price_30` int(11) NOT NULL,
+  `price_40` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `menu`
 --
 
-INSERT INTO `menu` (`id`, `nazwa`, `skladniki`, `cena_30`, `cena_40`) VALUES
+INSERT INTO `menu` (`id`, `name`, `ingredients`, `price_30`, `price_40`) VALUES
 (1, 'Margherita', 'sos pomidorowy, ser, oregano', 24, 34),
 (2, 'Funghi', 'sos pomidorowy, ser, oregano, pieczarki', 25, 40),
 (3, 'Salami', 'sos pomidorowy, ser, oregano, salami', 26, 43),
@@ -109,53 +138,69 @@ INSERT INTO `menu` (`id`, `nazwa`, `skladniki`, `cena_30`, `cena_40`) VALUES
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla tabeli `miasta`
+-- Struktura tabeli dla tabeli `menu_orders`
 --
 
-CREATE TABLE `miasta` (
-  `id` int(11) NOT NULL,
-  `nazwa` varchar(50) NOT NULL
+CREATE TABLE `menu_orders` (
+  `orders_id` int(11) NOT NULL,
+  `menu_id` int(11) NOT NULL,
+  `quantity` int(11) NOT NULL,
+  `size` int(11) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
--- Dumping data for table `miasta`
+-- Dumping data for table `menu_orders`
 --
 
-INSERT INTO `miasta` (`id`, `nazwa`) VALUES
-(1, 'Krapkowice'),
-(2, 'Gogolin'),
-(3, 'Odrowąż'),
-(4, 'Malnia'),
-(5, 'Gwoździce');
+INSERT INTO `menu_orders` (`orders_id`, `menu_id`, `quantity`, `size`) VALUES
+(1, 1, 1, 30),
+(1, 1, 1, 40),
+(1, 2, 2, 40),
+(1, 4, 1, 30),
+(1, 5, 1, 40),
+(1, 6, 1, 30),
+(1, 7, 1, 30),
+(1, 11, 1, 30);
 
 -- --------------------------------------------------------
 
 --
--- Struktura tabeli dla tabeli `zamowienia`
+-- Struktura tabeli dla tabeli `orders`
 --
 
-CREATE TABLE `zamowienia` (
+CREATE TABLE `orders` (
   `id` int(11) NOT NULL,
-  `id_klienta` int(11) NOT NULL,
-  `id_pizzy` int(11) NOT NULL,
-  `ilosc` int(11) NOT NULL,
-  `rozmiar` int(11) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_polish_ci;
+  `client_id` int(11) NOT NULL,
+  `total_price` int(11) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
+
+--
+-- Dumping data for table `orders`
+--
+
+INSERT INTO `orders` (`id`, `client_id`, `total_price`) VALUES
+(1, 1, 291);
 
 --
 -- Indeksy dla zrzutów tabel
 --
 
 --
--- Indeksy dla tabeli `klient`
+-- Indeksy dla tabeli `admin_account`
 --
-ALTER TABLE `klient`
+ALTER TABLE `admin_account`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeksy dla tabeli `logowanie`
+-- Indeksy dla tabeli `cities`
 --
-ALTER TABLE `logowanie`
+ALTER TABLE `cities`
+  ADD PRIMARY KEY (`id`);
+
+--
+-- Indeksy dla tabeli `client`
+--
+ALTER TABLE `client`
   ADD PRIMARY KEY (`id`);
 
 --
@@ -165,33 +210,39 @@ ALTER TABLE `menu`
   ADD PRIMARY KEY (`id`);
 
 --
--- Indeksy dla tabeli `miasta`
+-- Indeksy dla tabeli `menu_orders`
 --
-ALTER TABLE `miasta`
-  ADD PRIMARY KEY (`id`);
+ALTER TABLE `menu_orders`
+  ADD PRIMARY KEY (`orders_id`,`menu_id`,`size`),
+  ADD KEY `menu_orders_menu_fk` (`menu_id`);
 
 --
--- Indeksy dla tabeli `zamowienia`
+-- Indeksy dla tabeli `orders`
 --
-ALTER TABLE `zamowienia`
+ALTER TABLE `orders`
   ADD PRIMARY KEY (`id`),
-  ADD KEY `id_klienta` (`id_klienta`),
-  ADD KEY `id_pizzy` (`id_pizzy`);
+  ADD KEY `orders_client_fk` (`client_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables
 --
 
 --
--- AUTO_INCREMENT for table `klient`
+-- AUTO_INCREMENT for table `admin_account`
 --
-ALTER TABLE `klient`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=12;
+ALTER TABLE `admin_account`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
--- AUTO_INCREMENT for table `logowanie`
+-- AUTO_INCREMENT for table `cities`
 --
-ALTER TABLE `logowanie`
+ALTER TABLE `cities`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
+
+--
+-- AUTO_INCREMENT for table `client`
+--
+ALTER TABLE `client`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
@@ -201,27 +252,27 @@ ALTER TABLE `menu`
   MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=30;
 
 --
--- AUTO_INCREMENT for table `miasta`
+-- AUTO_INCREMENT for table `orders`
 --
-ALTER TABLE `miasta`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=6;
-
---
--- AUTO_INCREMENT for table `zamowienia`
---
-ALTER TABLE `zamowienia`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=11;
+ALTER TABLE `orders`
+  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=2;
 
 --
 -- Constraints for dumped tables
 --
 
 --
--- Constraints for table `zamowienia`
+-- Constraints for table `menu_orders`
 --
-ALTER TABLE `zamowienia`
-  ADD CONSTRAINT `zamowienia_ibfk_1` FOREIGN KEY (`id_pizzy`) REFERENCES `menu` (`id`),
-  ADD CONSTRAINT `zamowienia_ibfk_2` FOREIGN KEY (`id_klienta`) REFERENCES `klient` (`id`);
+ALTER TABLE `menu_orders`
+  ADD CONSTRAINT `menu_orders_menu_fk` FOREIGN KEY (`menu_id`) REFERENCES `menu` (`id`),
+  ADD CONSTRAINT `menu_orders_orders_fk` FOREIGN KEY (`orders_id`) REFERENCES `orders` (`id`);
+
+--
+-- Constraints for table `orders`
+--
+ALTER TABLE `orders`
+  ADD CONSTRAINT `orders_client_fk` FOREIGN KEY (`client_id`) REFERENCES `client` (`id`);
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;
