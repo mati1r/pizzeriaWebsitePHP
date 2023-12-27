@@ -1,11 +1,11 @@
 <!DOCTYPE html>
 
 <?php
-@$conn= new mysqli('localhost','root','','Restauracja');
+@$conn= new mysqli('localhost','root','','pizzeria');
 if($conn->connect_errno){
     die($conn->connect_error);
 }
-$query="SELECT id, nazwa, skladniki, cena_30, cena_40 FROM menu";
+$query="SELECT id, name, ingredients, price_30, price_40 FROM menu";
 $result=$conn->query($query);
 ?>
 
@@ -39,10 +39,10 @@ $result=$conn->query($query);
             while($row=$result->fetch_assoc())
             {
                 echo "<tr>";
-                echo "<td class = 'menu_nazwa'><b> ${row['id']}. ${row['nazwa']} </b> 
-                <br/> ${row['skladniki']}</td>";
-                echo "<td class = 'menu_cena'>${row['cena_30']} zł</td>";
-                echo "<td class = 'menu_cena'>${row['cena_40']} zł</td>";
+                echo "<td class = 'menu_nazwa'><b> ${row['id']}. ${row['name']} </b> 
+                <br/> ${row['ingredients']}</td>";
+                echo "<td class = 'menu_cena'>${row['price_30']} zł</td>";
+                echo "<td class = 'menu_cena'>${row['price_40']} zł</td>";
                 echo "</tr>";
             }
         ?>

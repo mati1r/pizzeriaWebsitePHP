@@ -8,24 +8,28 @@ if ($_SESSION['login'] != true)
     header('Location: index.php');
 }
 
-@$conn= new mysqli('localhost','root','','Restauracja');
+@$conn= new mysqli('localhost','root','','pizzeria');
 if($conn->connect_errno){
     die($conn->connect_error);
 }
 
-$queryMenu="SELECT id, nazwa FROM menu";
+$queryMenu="SELECT id, name FROM menu";
 $resultMenu=$conn->query($queryMenu);
 
 $id = intval($_GET['id']) ?? null;
 
-$queryData="SELECT zamowienia.id, Imie, Nazwisko, Telefon, id_pizzy, ilosc, rozmiar, cena_40 FROM zamowienia JOIN klient
-ON (zamowienia.id_klienta = klient.id) JOIN menu ON (zamowienia.id_pizzy = menu.id) WHERE zamowienia.id = $id;";
+$queryPersonData="SELECT name, surname, phone_number FROM orders JOIN client
+ON (orders.client_id = client.id) WHERE orders.id = $id;";
 
-$resultData=$conn->query($queryData);
-$row=$resultData->fetch_assoc();
+$resultPersonData=$conn->query($queryPersonData);
+$rowPersonData=$resultPersonData->fetch_assoc();
 
-$selected = $row['rozmiar'];
-$pizzaId = $row['id_pizzy'];
+$orderData="SELECT orders.id, menu.id as menu_id, menu.name, menu_orders.quantity, menu_orders.size FROM orders 
+            JOIN menu_orders ON (orders.id = menu_orders.orders_id) 
+            JOIN menu ON (menu_orders.menu_id = menu.id) WHERE orders.id = $id;"; 
+
+$resultOrderData=$conn->query($orderData);
+
 ?>
 
 <html lang="en">
@@ -53,36 +57,43 @@ $pizzaId = $row['id_pizzy'];
                 <div class="edit">   
                     <div class="item-edit">
                         <h2>Dane klienta</h2>
-                        <input class="edit" type="text" name="Name" placeholder="Imie" value="<?= $row['Imie']?>"/></br>
-                        <input class="edit" type="text" name="Surname" placeholder="Nazwisko"  value="<?= $row['Nazwisko']?>"/></br>
-                        <input class="edit" type="tel" name="PhoneNumber" placeholder="Telefon: 123-456-789"  pattern="[0-9]{3}-[0-9]{3}-[0-9]{3}" value="<?= $row['Telefon']?>"/>
+                        <input class="edit" type="text" name="Name" placeholder="Imie" 
+                                value="<?= $rowPersonData['name']?>"/></br>
+                        <input class="edit" type="text" name="Surname" placeholder="Nazwisko"  
+                                value="<?= $rowPersonData['surname']?>"/></br>
+                        <input class="edit" type="tel" name="PhoneNumber" placeholder="Telefon: 123-456-789"  
+                                pattern="[0-9]{3}-[0-9]{3}-[0-9]{3}" value="<?= $rowPersonData['phone_number']?>"/>
                         </br>
                     </div>
                     
                     <div class="item-edit">
                         <h2>Dane zamowienia</h2>
-
-                        <select class="edit" name="PizzaId">
                         <?php
-                            while($rowMenu=$resultMenu->fetch_assoc())
+                            while($rowOrderData=$resultOrderData->fetch_assoc())
                             {
-                                if($rowMenu['id'] == $pizzaId)
-                                {
-                                    echo "<option value=${rowMenu['id']} selected> ${rowMenu['nazwa']} </option>"; 
-                                }
-                                else
-                                {
-                                    echo "<option value=${rowMenu['id']}> ${rowMenu['nazwa']} </option>"; 
-                                }
+                            $select = $rowOrderData['size'];
+                            echo "<select class='edit' name='PizzaId'>";
+                                    $resultMenu->data_seek(0);
+                                    while($rowMenu=$resultMenu->fetch_assoc()){
+                                        if($rowMenu['id'] == $rowOrderData['menu_id'])
+                                        {
+                                            echo "<option value=${rowMenu['id']} selected> ${rowMenu['name']} </option>"; 
+                                        }
+                                        else
+                                        {
+                                            echo "<option value=${rowMenu['id']}> ${rowMenu['name']} </option>"; 
+                                        }
+                                    }
+
+                                echo "</select>
+
+                                <input class='edit' type='number' name='Quantity' placeholder='Ilość' value='${rowOrderData['quantity']}' min = '1' max = '99'/></br>
+                                <select class='edit' name='Size'>
+                                            <option value=30>30</option>
+                                            <option value=40>40</option>
+                                </select></br>";
                             }
                         ?>
-                        </select>
-
-                        <input class="edit" type="number" name="Quantity" placeholder="Ilość" value="<?= $row['ilosc']?>" min = "1" max = "99"/></br>
-                        <select class="edit" name="Size">
-                                    <option <?php if($selected == '30'){echo("selected");}?> value=30>30</option>
-                                    <option <?php if($selected == '40'){echo("selected");}?> value=40>40</option>
-                        </select></br>
                         <input class="button" type="button" 
                         onclick="Edit(Name.value, Surname.value, PhoneNumber.value, PizzaId.value, Quantity.value, Size.value,'<?=$id?>')" value="Zatwierdz"/>
 

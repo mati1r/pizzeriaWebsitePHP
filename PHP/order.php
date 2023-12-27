@@ -1,15 +1,22 @@
 <!DOCTYPE html>
 
 <?php
-@$conn= new mysqli('localhost','root','','Restauracja');
+session_start();
+
+if(!isset($_SESSION['cart']))
+{
+    header("Location: index.php");
+}
+
+@$conn= new mysqli('localhost','root','','pizzeria');
 if($conn->connect_errno){
     die($conn->connect_error);
 }
 
-$queryMenu="SELECT id, nazwa FROM menu";
+$queryMenu="SELECT id, name FROM menu";
 $resultMenu=$conn->query($queryMenu);
 
-$queryCity="SELECT nazwa FROM miasta";
+$queryCity="SELECT name FROM cities";
 $resultCity=$conn->query($queryCity);
 ?>
 
@@ -33,9 +40,13 @@ $resultCity=$conn->query($queryCity);
             <a class="menu active" href="#zamowienia" onClick="callReload('order.php', 'content', 'Trwa ładowanie strony...')">Zamowienie</a>
         </nav>
         <br/>
-            
-            <form name="form_zam" id = "form_zam">
-                <div class="zamowienie">
+            <div class="cart-container">
+                <input class="button" type="button" onclick="callReload('orderConfirm.php', 'content', 'Trwa ładowanie strony...')" value="Powrót"/>
+                <h3>DANE DOSTAWY</h3>
+                <p></p>
+            </div>     
+            <form name="orderForm" id="orderForm">
+                <div class="personal-data">
                     <div class="item">
                         <h2>Dane personalne</h2>
                         <input class="zamowienie" type="text" name="name"  placeholder="Imie" /></br>
@@ -51,7 +62,7 @@ $resultCity=$conn->query($queryCity);
                         <?php
                             while($rowCity=$resultCity->fetch_assoc())
                             {
-                                echo "<option value=${rowCity['nazwa']}> ${rowCity['nazwa']} </option>"; 
+                                echo "<option value=${rowCity['name']}> ${rowCity['name']} </option>"; 
                             }
                         ?>
                         </select></br>
@@ -60,32 +71,10 @@ $resultCity=$conn->query($queryCity);
                         <input class="zamowienie" type="number" name="buildingNumber"  placeholder="Numer budynku" /></br>
                         <input class="zamowienie" type="number" name="apartmentNumber" placeholder="Numer mieszkania"/></br>
                         </br>
-                    </div>
-                    
-                    <div class="item">
-                        <h2>Dane zamowienia</h2>
-                        <select class="zamowienie" name="pizzaId" onchange="CountPrice(this.value, quantity.value, size.value)">
-                        <?php
-                            while($rowMenu=$resultMenu->fetch_assoc())
-                            {
-                                echo "<option value=${rowMenu['id']}> ${rowMenu['nazwa']} </option>"; 
-                            }
-                        ?>
-                        </select>
-                        </br>
-                        <input class = "zamowienie" type="number" name="quantity" onchange="CountPrice(pizzaId.value, this.value, size.value)"
-                        placeholder="Ilość"/></br>
-                        <input class="radio" type="radio" name="size" onchange="CountPrice(pizzaId.value, quantity.value, this.value)"
-                        value = 30 checked = "checked">30 cm</input>
-                        <input class ="radio" type="radio" name="size" onchange="CountPrice(pizzaId.value, quantity.value, this.value)"
-                        value = 40>40 cm</input></br>
-
-                        <div class="Cena" id="Cena">Cena: 0 zł</div>
-                        
-                        </br>
-                        <input class="button" type="button"id="zatwierdz" onclick ="Validate(form_zam)" value="Zamow"/>
-                        <input class="button" type="reset">
-                    </div>
+                    </div>            
+                </div>
+                <div>
+                    <input class="button-big" type="button"id="zatwierdz" onclick ="Validate(orderForm)" value="Zamow"/>
                 </div>
                 <div class="error" id="error"></div>
             </form>

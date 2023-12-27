@@ -8,14 +8,14 @@ if ($_SESSION['login'] != true)
     header('Location: index.php');
 }
 
-@$conn= new mysqli('localhost','root','','Restauracja');
+@$conn= new mysqli('localhost','root','','pizzeria');
 
 if($conn->connect_errno){
     die($conn->connect_error);
 }
 
-$menu="SELECT zamowienia.id, Imie, Nazwisko, Telefon, nazwa, ilosc, rozmiar, cena_40, cena_30 FROM zamowienia JOIN klient
- ON (zamowienia.id_klienta = klient.id) JOIN menu ON (zamowienia.id_pizzy = menu.id);";
+$menu="SELECT orders.id, name, surname, phone_number, total_price FROM orders JOIN client
+ ON (orders.client_id = client.id);";
 $result=$conn->query($menu);
 
 ?>
@@ -48,40 +48,26 @@ $result=$conn->query($menu);
                     <td class = "admin"> <b> Imie </b> </td>
                     <td class = "admin"> <b> Nazwisko </b> </td>
                     <td class = "admin"> <b> Telefon </b> </td>
-                    <td class = "admin"> <b> Nazwa pizzy </b> </td>
-                    <td class = "admin"> <b> Ilosc </b> </td>
-                    <td class = "admin"> <b> Rozmiar </b> </td>
                     <td class = "admin"> <b> Cena </b> </td>
                     <td class = "admin"> <b> Opcje </b> </td>
                 </tr>   
         <?php
             while($row=$result->fetch_assoc())
             {
-                if($row['rozmiar'] == 30)
-                {
-                    $price = $row['ilosc'] * $row['cena_30'];
-                }
-                else
-                {
-                    $price = $row['ilosc'] * $row['cena_40'];
-                }
-
+                $price = 0;
                 echo "<tr>";
                 echo "<td class = 'admin' name='iD'>${row['id']}</td>";
-                echo "<td class = 'admin'>${row['Imie']}</td>";
-                echo "<td class = 'admin'>${row['Nazwisko']}</td>";
-                echo "<td class = 'admin'>${row['Telefon']}</td>";
-                echo "<td class = 'admin'>${row['nazwa']}</td>";
-                echo "<td class = 'admin'>${row['ilosc']}</td>";
-                echo "<td class = 'admin'>${row['rozmiar']} cm</td>";
-                echo "<td class = 'admin'>CENA:$price zł</td>";
-                $Id = intval($row['id']);
+                echo "<td class = 'admin'>${row['name']}</td>";
+                echo "<td class = 'admin'>${row['surname']}</td>";
+                echo "<td class = 'admin'>${row['phone_number']}</td>";
+                echo "<td class = 'admin'>${row['total_price']} zł</td>";
+                $id = intval($row['id']);
                 ?>
                 
                 <td class = 'admin'>
 
-                <button onClick = "RedirectToEdit('<?=$Id?>','content', 'Trwa ładowanie strony...')">Edytuj</button>
-                <button onClick = "Delete('<?=$Id?>')" >Usuń</button> </td>   
+                <button onClick = "RedirectToEdit('<?=$id?>','content', 'Trwa ładowanie strony...')">Edytuj</button>
+                <button onClick = "Delete('<?=$id?>')" >Usuń</button> </td>   
 
                 <?php 
                 echo "</tr>";

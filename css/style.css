@@ -65,6 +65,18 @@ div.zamowienie
     height: 100%;
 }
 
+div.personal-data
+{
+    color: white;
+    text-shadow: 5px 5px 10px black;
+    display: grid;
+    grid-template-columns: repeat(2, 1fr);
+    gap: 50px;
+    padding-top: 50px;
+    padding-bottom: 100px;
+    height: 100%;
+}
+
 .item 
 {
     width: 100%;
@@ -97,7 +109,7 @@ div.edit
 }
 
 @media (max-width: 600px) {
-    div.zamowienie, div.edit {
+    div.zamowienie, div.edit, div.personal-data{
         grid-template-columns: 1fr;
     }
 }
@@ -114,6 +126,13 @@ div.Cena
 img.rest
 {
     float: left;
+    margin-bottom: 20px;
+}
+
+@media (max-width: 600px) {
+    img.rest {
+        width: 100%;
+    }
 }
 
 input[type="number"]::-webkit-inner-spin-button,
@@ -184,7 +203,7 @@ input.button
     cursor: pointer;
 }
 
-input.button-big
+.button-big
 {
     background-color: #6b0404;
     color: white;
@@ -274,15 +293,16 @@ table.menu
 nav 
 {
     background-color: #6b0404;
-    position: sticky;
     top: 0px;
+    display: flex;
+    width: 100%;
 }
 
 a.menu 
 {
-    display: inline-block;
-    width: 15%;
-    padding: 15px 30px 15px 30px;
+    display: block;
+    width: 100%;
+    padding: 15px 30px;
     color: white;
     text-decoration: solid;
 }
@@ -291,6 +311,16 @@ a.menu:hover
 {
     background-color: #aa0808;
     color: black;
+}
+
+@media (max-width: 600px) {
+    nav {
+        display: block;
+    }
+    a.menu {
+        width: auto;
+        text-align: left;
+    }
 }
 
 a.mail_link
@@ -374,3 +404,116 @@ ul
     display: inline-block;
     text-align: left;
 }
+
+.card 
+{
+    border: #6b0404 solid 1px;
+    background-color: #444;
+    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    text-align: center;
+    border-radius: 8px;
+    margin: 10px;
+}
+
+.card img 
+{
+    overflow: hidden;
+    max-width: 100%;
+    height: 100%;
+    border-radius: 8px;
+}
+
+.card h2 
+{
+    margin-top: 10px;
+}
+
+.quantity-container, .data-container
+{
+    margin-top: 15px;
+    padding: 0 12px;
+    display: flex;
+    align-items: center;
+    justify-content: space-evenly;
+}
+
+.quantity-container input 
+{
+    padding: 8px;
+    background-color: #444;
+    border: 0;
+    border-radius: 4px;
+    text-align: center;
+    width: 10%;
+}
+
+.quantity-container input:disabled 
+{
+    color: #fff;
+}
+
+.quantity-input
+{
+    display: flex;
+    justify-content: end;
+}
+
+.card .btn
+{
+    background-color: #6b0404;
+    color: white;
+    font-weight: bold;
+    border: black;
+    padding: 12px 0;
+    border-radius: 10px;
+    cursor: pointer;
+    width: 90%;
+    margin: 12px;
+}
+
+.card .btn:hover
+{
+    background-color: #aa0808;
+    color: black;
+}
+
+.card .radio-container
+{
+    display: flex;
+    justify-content: space-between;
+    margin: 0 20px;
+}
+
+.cart-container
+{
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: white;
+    margin: 0 20px;
+}
+
+.data-confirm
+{
+    display: flex;
+    align-items: center;
+}
+
+.data-amount
+{
+    margin-left: 5px;
+}
+
+.data-confirm-price
+{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.sum
+{
+    color: white;
+}
+
+

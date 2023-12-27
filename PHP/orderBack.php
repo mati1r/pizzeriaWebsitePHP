@@ -1,5 +1,5 @@
 <?php
-@$conn= new mysqli('localhost','root','','Restauracja');
+@$conn= new mysqli('localhost','root','','pizzeria');
 if($conn->connect_errno){
     die($conn->connect_error);
 }
@@ -13,9 +13,6 @@ else
     $street=$_GET['street'] ?? null;
     $buildingNumber=intval($_GET['buildingNumber']) ?? null;
     $apartmentNumber=intval($_GET['apartmentNumber']) ?? null;
-    $pizzaId=intval($_GET['pizzaId']) ?? null;
-    $quantity=intval($_GET['quantity']) ?? null;
-    $size=intval($_GET['size']) ?? null;
 
     if (empty($name)) 
     {
@@ -89,30 +86,11 @@ else
         echo "Wypełnij poprawnie numer mieszkania (zakres od 1 do 999)";
         return;
     }
-    
-    if (empty($pizzaId) || $pizzaId < 1 || $pizzaId > 29) 
-    {
-        http_response_code(400);
-        echo "Wypełnij poprawnie numer pizzy ";
-        return;
-    }
-    
-    if (empty($quantity) || $quantity < 1 || $quantity > 99) 
-    {
-        http_response_code(400);
-        echo "Wypełnij poprawnie ilość (można zamówić do 99 pizz)";
-        return;
-    }
-    
-    if (empty($size)) 
-    {
-        http_response_code(400);
-        echo "Wybierz rozmiar pizzy";
-        return;
-    }
+
+    session_start();
 
     // Check if client exists
-    $queryClientCheck = "SELECT id FROM klient WHERE Imie = ? AND Nazwisko = ? AND Telefon = ?";
+    $queryClientCheck = "SELECT id FROM client WHERE name = ? AND surname = ? AND phone_number = ?";
     $stmtClientCheck = $conn->prepare($queryClientCheck);
     $stmtClientCheck->bind_param('sss', $name, $surname, $phoneNumber);
     $stmtClientCheck->execute();
@@ -120,35 +98,69 @@ else
 
     // If there is no such client, insert
     if ($resultClientCheck->num_rows == 0) {
-        $queryInsertClient = "INSERT INTO klient VALUES (null, ?, ?, ?, ?, ?, ?, ?)";
+        $queryInsertClient = "INSERT INTO client VALUES (null, ?, ?, ?, ?, ?, ?, ?)";
         $stmtInsertClient = $conn->prepare($queryInsertClient);
         $stmtInsertClient->bind_param('sssssii', $name, $surname, $phoneNumber, $city, $street, $buildingNumber, $apartmentNumber);
         $stmtInsertClient->execute();
 
         // Retrieve inserted client ID
-        $queryClientId = "SELECT id FROM klient WHERE Imie = ? AND Nazwisko = ? AND Telefon = ?";
+        $queryClientId = "SELECT id FROM client WHERE name = ? AND surname = ? AND phone_number = ?";
         $stmtClientId = $conn->prepare($queryClientId);
         $stmtClientId->bind_param('sss', $name, $surname, $phoneNumber);
         $stmtClientId->execute();
         $resultClientId = $stmtClientId->get_result();
-        $row = $resultClientId->fetch_assoc();
+        $clientId = $resultClientId->fetch_assoc();
 
     }
     else //If there is such a clinet
     {
-        $row = $resultClientCheck->fetch_assoc();
+        $clientId = $resultClientCheck->fetch_assoc();
     }
 
-    // Insert pizza order
-    $queryPizza = "INSERT INTO zamowienia VALUES (null, ?, ?, ?, ?)";
-    $stmtPizza = $conn->prepare($queryPizza);
-    $stmtPizza->bind_param('iiii', $row['id'], $pizzaId, $quantity, $size);
-    $stmtPizza->execute();
+    $sum = 0;
+    foreach ($_SESSION['cart'] as $index => $pizza) {
+        $sum += $pizza['price'];
+    }
 
+    // Insert order
+    $queryOrder = "INSERT INTO orders VALUES (null, ?, ?)";
+    $stmtOrder = $conn->prepare($queryOrder);
+    $stmtOrder->bind_param('ii', $clientId['id'], $sum);
+    $stmtOrder->execute();
+
+    //Get order id
+    $orderId = $stmtOrder->insert_id;
+    //echo $orderId;
+
+    //Insert pizza from cart to order to table menu-orders
+    
+    foreach ($_SESSION['cart'] as $index => $pizza) {
+        $queryMenuOrders = "INSERT INTO menu_orders VALUES (?, ?, ?, ?)";
+        $stmtMenuOrders = $conn->prepare($queryMenuOrders);
+
+        $pizzaId = intval($pizza["id"]);
+        $quantity = intval($pizza['quantity']);
+        $size = intval($pizza['size']);
+
+        $stmtMenuOrders->bind_param('iiii', $orderId, $pizzaId, $quantity, $size);
+        $stmtMenuOrders->execute();
+    }
+
+    //Unset cart after insert
+    unset($_SESSION['cart']);
+
+    //Close stmt's
     $stmtClientCheck->close();
-    $stmtInsertClient->close();
-    $stmtClientId->close();
-    $stmtPizza->close();
+
+    if ($stmtInsertClient !== null) {
+        $stmtInsertClient->close();
+    }
+    if($stmtClientId !== null) {
+        $stmtClientId->close();
+    }
+
+    $stmtOrder->close();
+    $stmtMenuOrders->close();
 }
 mysqli_close($conn);    
     

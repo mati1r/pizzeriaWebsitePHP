@@ -19,7 +19,7 @@
                 <a class="menu active" href="#" onClick="callReload('index.php', 'content', 'Trwa ładowanie strony...')">Strona główna</a>
                 <a class="menu" href="#menu" onClick="callReload('menu.php', 'content', 'Trwa ładowanie strony...')" >Menu</a>
                 <a class="menu" href="#kontakt" onClick="callReload('contact.php', 'content', 'Trwa ładowanie strony...')">Kontakt</a>
-                <a class="menu" href="#zamowienia" onClick="callReload('order.php', 'content', 'Trwa ładowanie strony...')">Zamowienie</a>
+                <a class="menu" href="#zamowienia" onClick="callReload('orderSelect.php', 'content', 'Trwa ładowanie strony...')">Zamowienie</a>
                 <?php
                 session_start();
                 if(isset($_SESSION['login']) && $_SESSION['login'] === true)

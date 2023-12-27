@@ -1,14 +1,14 @@
 <?php
 
-@$conn = new mysqli('localhost', 'root', '', 'Restauracja');
+@$conn = new mysqli('localhost', 'root', '', 'pizzeria');
 if ($conn->connect_errno) {
     die($conn->connect_error);
 }
 
 $login = $_GET['login'] ?? null;
 $password = $_GET['password'] ?? null;
-echo "Login: $login, Password: $password<br>";
-$query = "SELECT login, haslo FROM logowanie WHERE login = ? AND haslo = ?";
+
+$query = "SELECT login, password FROM admin_account WHERE login = ? AND password = ?";
 $stmt = $conn->prepare($query);
 $stmt->bind_param('ss', $login, $password);
 
@@ -21,7 +21,6 @@ if ($stmt->num_rows > 0) {
     session_commit();
 } else {
     http_response_code(401);
-    echo "Login: $login, Password: $password<br>";
 }
 
 $stmt->close();

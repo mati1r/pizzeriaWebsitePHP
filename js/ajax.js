@@ -110,12 +110,11 @@ function Edit(name, surname, phoneNumber, pizzaId, quantity, size, recordId)
         }
         
 }
-function Order(name, surname, phoneNumber, city, street, buildingNumber , apartmentNumber, pizzaId, quantity, size)
+function Order(name, surname, phoneNumber, city, street, buildingNumber , apartmentNumber)
 {
         let xmlhttp = new XMLHttpRequest(); 
         xmlhttp.open("GET","orderBack.php?name="+name+"&surname="+surname+"&phoneNumber="+phoneNumber+
-        "&city="+city+"&street="+street+"&buildingNumber="+buildingNumber+"&apartmentNumber="+apartmentNumber+
-        "&pizzaId="+pizzaId+"&quantity="+quantity+"&size="+size,true);
+        "&city="+city+"&street="+street+"&buildingNumber="+buildingNumber+"&apartmentNumber="+apartmentNumber,true);
         xmlhttp.send();
         xmlhttp.onreadystatechange = function() {
                 if (this.readyState == 4 && this.status == 200) { 
@@ -129,22 +128,79 @@ function Order(name, surname, phoneNumber, city, street, buildingNumber , apartm
 
 function CountPrice(str,str2,str3) 
 {
-        if (str == "" || str2 =="" || str3 =="") 
-        {
-                document.getElementById("Cena").innerHTML = "Cena: ";
-                return;
-        } 
-        else
-        {
-            let xmlhttp = new XMLHttpRequest();
-            xmlhttp.onreadystatechange = function() {
-                if (this.readyState == 4 && this.status == 200) { 
-                    document.getElementById("Cena").innerHTML = this.responseText;
+        return new Promise((resolve, reject) => {
+                if (str === "" || str2 === "" || str3 === "") {
+                        reject(new Error("Missing parameters"));
+                } else {
+                        let xmlhttp = new XMLHttpRequest();
+                        xmlhttp.onreadystatechange = function () {
+                        if (this.readyState == 4 && this.status == 200) {
+                                resolve(parseInt(this.responseText));
+                        }
+                        };
+                        xmlhttp.open("GET", "countPrice.php?pizzaId=" + str + "&quantity=" + str2 + "&size=" + str3, true);
+                        xmlhttp.send();
                 }
-            };
-        xmlhttp.open("GET","countPrice.php?pizzaId="+str+"&quantity="+str2+"&size="+str3,true);
+                });
+}
+
+function increaseQuantity(id) 
+{
+        let quantityInput = document.getElementById('quantity'+id);
+
+        quantityInput.value = parseInt(quantityInput.value, 10) + 1;
+}
+
+function decreaseQuantity(id) 
+{
+        let quantityInput = document.getElementById('quantity'+id);
+
+        let currentValue = parseInt(quantityInput.value, 10);
+        if (currentValue >= 1) {
+                quantityInput.value = currentValue - 1;
+        }
+}
+
+async function AddToCart(id, quantity, name)
+{       
+        let size = parseInt(document.querySelector('input[name="size' + id + '"]:checked').value, 10);
+
+        let price = await CountPrice(id, quantity, size);
+        console.log(id, quantity, price)
+
+        let xmlhttp = new XMLHttpRequest(); 
+        xmlhttp.open("GET","orderSelectBack.php?pizzaId="+id+"&quantity="+quantity+"&price="
+                        +price+"&size="+size+"&name="+name,true);
         xmlhttp.send();
-        };
+        xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) { 
+
+                        let cartArray = JSON.parse(this.responseText);
+
+                        // Sprawdzenie ilości elementów 
+                        let numberOfItems = Object.keys(cartArray).length;
+                        document.getElementById("cart-quantity").innerHTML = numberOfItems;
+                        document.getElementById('go-next').disabled = false;
+                }
+                if (this.readyState == 4 && this.status == 400) { 
+                        console.log(this.responseText)
+                }
+        };      
+}
+
+function RemoveFromCart(id, size)
+{       
+        let xmlhttp = new XMLHttpRequest(); 
+        xmlhttp.open("GET","orderConfirmBack.php?pizzaId="+id+"&size="+size,true);
+        xmlhttp.send();
+        xmlhttp.onreadystatechange = function() {
+                if (this.readyState == 4 && this.status == 200) { 
+                        callReload('orderConfirm.php', 'content', 'Trwa ładowanie strony...')
+                }
+                if (this.readyState == 4 && this.status == 400) { 
+                        console.log(this.responseText)
+                }
+        };      
 }
 
 
@@ -160,7 +216,7 @@ function Validate(form)
         }
 
         if(form.surname.value == ''){
-                formErrors.push("Wypełnij Nazwisko");
+                formErrors.push("Wypełnij nazwisko");
         }else if(form.surname.value.length < 5){
                 formErrors.push("Nazwisko musi zawierać minimum 5 znaków");
         }
@@ -195,26 +251,9 @@ function Validate(form)
                 formErrors.push("Nr mieszkania ma zakres od 1 do 999");
         }
 
-        if(form.pizzaId.value == ""){
-                formErrors.push("Wypełnij numer pizzy");
-        }else if(form.pizzaId.value < 1 || form.pizzaId.value > 29){
-                formErrors.push("Nr pizzy ma zakres od 1 do 29");
-        }     
-
-        if(form.quantity.value == ""){
-                formErrors.push("Wypełnij ilość");
-        }else if(form.quantity.value < 1 || form.quantity.value > 99){
-                formErrors.push("Można zamówić do 99 pizz");
-        }      
-
-        if(form.size.value == ""){
-                formErrors.push("Wybierz rozmiar pizzy");
-        }
-
         if(formErrors.length == 0){
                 Order(form.name.value, form.surname.value, form.phoneNumber.value, form.city.value, 
-                        form.street.value, form.buildingNumber.value, form.apartmentNumber.value,
-                        form.pizzaId.value, form.quantity.value, form.size.value);
+                        form.street.value, form.buildingNumber.value, form.apartmentNumber.value);
                 
         }else{
                 errorMessage.innerHTML = 
